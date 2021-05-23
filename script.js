@@ -1,14 +1,9 @@
 
-var player1 = "Player 1";
-var player2 = "Player 2";
+var {player1,player2,isPlayingWithComputer,player1Score,player2Score} = checkSavedValues()
+
 var currentPlayer = 0;
 var winner = -1;
-var isPlayingWithComputer = false
-var player1Score= 0,player2Score= 0;
 var gameResult = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]]
-
-
-
 
 const cases = document.querySelectorAll('.case');
 
@@ -22,12 +17,23 @@ const oSvg = '<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xm
 const player1Avatar = $('.player1-section .avatar-container')
 const player2Avatar = $('.player2-section .avatar-container')
 
+const player1ScoreElement = $('.player1-section .score')
+const player2ScoreElement = $('.player2-section .score')
+
+
 const userSvg = player1Avatar.html()
 const computerSvg = player2Avatar.html()
 
-const turnP = document.querySelector('.turn')
+const turnP = $('.turn')
 
-updateTurn()
+const player1Name = $('.player1-section .name')
+const player2Name = $('.player2-section .name')
+
+const player2Checkbox = document.querySelector('#checkbox-player2')
+
+
+updateValues()
+updateTurn(false)
 
 cases.forEach(el => {
     el.addEventListener('click', e => {
@@ -42,7 +48,7 @@ cases.forEach(el => {
     })
 })
 
-function computerTurn(){
+function computerTurn() {
     if (currentPlayer && isPlayingWithComputer) {
         let casePos = chooseRandomCase()
         fillCase(cases[casePos[0] * 3 + casePos[1]])
@@ -66,6 +72,13 @@ function fillCase(el) {
 function isGameOver() {
 
     if (checkWinner()) {
+        if (winner) {
+            ++player2Score
+        }else{
+        ++player1Score
+        }
+        saveValues()
+        updateValues()
         return true
     }
 
@@ -125,23 +138,23 @@ function chooseRandomCase() {
             }
         }
     }
-    console.log(availableCases)
     return availableCases[Math.floor(Math.random() * availableCases.length)]
 }
 
-function restarGame() {
+function restartGame() {
     cases.forEach(e => {
         e.innerHTML = '';
     })
     gameResult = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]]
     winner = -1
-
-    document.querySelector('.modal').style.display = 'none';
-    document.querySelector('.result-dialog').style.display = 'none';
     computerTurn()
+
+    $('.modal').fadeOut();
+    $('.result-dialog').hide();
+
 }
 
-const result_dialog_msg = document.querySelector('#result-dialog-msg');
+const result_dialog_msg = $('#result-dialog-msg');
 function showGameOverDialog() {
     let msg;
     if (winner == -1) {
@@ -149,70 +162,111 @@ function showGameOverDialog() {
     } else {
         msg = `${winner == 0 ? player1 : player2} is the winner`;
     }
-    result_dialog_msg.innerHTML = msg;
-    document.querySelector('.modal').style.display = 'block';
+    result_dialog_msg.html(msg);
+    $('.modal').css('display','block');
     document.querySelector('.result-dialog').style.display = 'flex';
 }
 
-const start_btn = document.querySelector('#start-btn')
-const p1 = document.querySelector('#player1')
-const p2 = document.querySelector('#player2')
+const start_btn = $('#start-btn')
+const p1 = $('#player1')
+const p2 = $('#player2')
 
 document.querySelector('#_2players').onchange = function () {
-    p2.value = this.checked ? "" : "Computer"
-    p2.disabled = !this.checked
+    p2.val(this.checked ? "" : "Computer")
+    p2.prop('disabled', !this.checked)
 }
 
-start_btn.addEventListener('click', e => {
-    document.querySelector('.modal').style.display = 'none';
-    document.querySelector('.play-dialog').style.display = 'none';
-    if (p1.value.length != 0) {
-        player1 = p1.value
+start_btn.on('click', e => {
+    $('.modal').fadeOut()
+    $('.play-dialog').hide()
+    if (p1.val().length != 0) {
+        player1 = p1.val()
+        player1Name.html(player1)
     }
 
-    if (p2.value.length != 0) {
-        player2 = p2.value
+    if (p2.val().length != 0) {
+        player2 = p2.val()
+        player2Name.html(player2)
     }
-
+    saveValues()
 })
 
-const restart_btn = document.querySelector('#restart-btn')
-restart_btn.onclick = e => {
-    restarGame()
-}
+$('#restart-btn').click(e => {
+    restartGame()
+})
 
-const player2Checkbox = document.querySelector('#checkbox-player2')
+
 player2Checkbox.addEventListener('change', e => {
-    
     setPlayingWithComputer(e.target.checked)
+    saveValues()
 })
-const player2Name = $('.player2-section .name')
-function setPlayingWithComputer(boo){
-    isPlayingWithComputer = !boo
 
-    if(isPlayingWithComputer){
+function setPlayingWithComputer(boo , restart = true) {
+    isPlayingWithComputer = !boo
+    restart && restartGame()
+    if (isPlayingWithComputer) {
         player2 = 'Computer'
-        player2Name.attr('contenteditable',false)
+        player2Name.attr('contenteditable', false)
         player2Name.html(player2)
         player2Avatar.html(computerSvg)
         return
     }
     player2 = 'Player 2'
-    player2Name.attr('contenteditable',true)
+    player2Name.attr('contenteditable', true)
     player2Name.html(player2)
     player2Avatar.html(userSvg)
 }
 
 $('.player1-section .name').on('input', e => {
     player1 = e.target.textContent
-    updateTurn()
+    updateTurn(false)
 })
 
-function updateTurn() {
+function updateTurn(changeAvatar = true) {
     let turnTxt = currentPlayer ? player2 : player1;
-    turnP.textContent = turnTxt + '\'s turn';
+    turnP.text(turnTxt + '\'s turn')
+    if (!changeAvatar) {
+        return
+    }
+    player2Avatar.toggleClass('turn-bg')
+    player1Avatar.toggleClass('turn-bg')
 }
 
-function restartScore(){
 
+
+function restartScore() {
+    player1Score = 0; player2Score = 0;
+    refreshScore()
+    restartGame()
+}
+
+
+function refreshScore() {
+    player1ScoreElement.html('Score: ' + player1Score)
+    player2ScoreElement.html('Score: ' + player2Score)
+}
+
+function checkSavedValues() {
+    if (data = localStorage.getItem('data')) {
+        return JSON.parse(data)
+    }
+    $('.modal').fadeIn()
+    $('.play-dialog').css('display','grid')
+    return {player1:'Player 1',player2:'Player 2',isPlayingWithComputer: true,player1Score: 0,player2Score: 0}
+}
+
+function saveValues() {
+    localStorage.setItem(
+        'data',
+        JSON.stringify({player1,player2,isPlayingWithComputer,player1Score,player2Score})
+    )
+}
+
+function updateValues(){
+    player1ScoreElement.html('Score: '+player1Score)
+    player2ScoreElement.html('Score: '+player2Score)
+    player1Name.html(player1)
+    player2Name.html(player2)
+    player2Checkbox.checked = !isPlayingWithComputer
+    setPlayingWithComputer(!isPlayingWithComputer,false)
 }

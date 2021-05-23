@@ -111,6 +111,7 @@ section.game-btns{
     background-color: #000000af;
     width: 100vw;
     height: 100vh;
+    display: none;
 }
 .dialog{
     background-color: #fafafa;
@@ -131,15 +132,14 @@ section.game-btns{
 #result-dialog-msg{
     margin: 0 12px 12px;
 }
+
 .play-dialog{
-    justify-content: start;
-}
-.play-dialog{
-    display: grid;
+    display: none;
     grid-template-columns: repeat(2,1fr);
     column-gap: 12px;
     row-gap: 16px;
     text-align: center;
+    justify-content: start;
 }
 #play-dialog-title,#start-btn,#copyright{
     grid-column: span 2;
@@ -212,12 +212,3 @@ button{
 
 
 
-.splash{
-    position: absolute;
-    background-color: red;
-    width: 100vw;
-    height: 100vh;
-    z-index: 99;
-    transition: all .5s;
-    
-}
