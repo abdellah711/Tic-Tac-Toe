@@ -70,21 +70,57 @@ svg circle, svg line{
     stroke-dashoffset: 82;
 }
 
-/* .lines-container{
+
+.win-line{
     position: absolute;
     width: 3%; height: 3%;
     background-color: yellow;
-    border-radius: 3px;
-    top: 15%;
-    left: 10%;
+    border-radius: 30px;
+    top: 16%;
+    left: 16%;
     transform-origin: center;
-    
-} */
-.line-horiz-1{
-    top: calc(0 * 33% + 15%);
-    transform-origin: left;
-    animation: show-line-horiz 1s 2s forwards;
+    /* animation-delay: 2s; */
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
+.line-horiz-1{
+    top: calc(0 * 33% + 16%);
+    animation-name: show-line-horiz;
+}
+.line-verti-1{
+    left: calc(0 * 33% + 16%);
+    animation-name: show-line-verti;
+}
+.line-horiz-2{
+    top: calc(1 * 33% + 16%);
+    animation-name: show-line-horiz;
+}
+.line-verti-2{
+    left: calc(1 * 33% + 16%);
+    animation-name: show-line-verti;
+}
+.line-horiz-3{
+    top: calc(2 * 33% + 16%);
+    animation-name: show-line-horiz;
+}
+.line-verti-3{
+    left: calc(2 * 33% + 16%);
+    animation-name: show-line-verti;
+}
+
+.line-diago-left{
+    top: 16%; left:16%;
+    transform: rotate(45deg);
+    transform-origin: left;
+    animation-name: show-line-diago;
+}
+.line-diago-right{
+    top: 16%; left:83%;
+    transform: rotate(135deg);
+    transform-origin: left;
+    animation-name: show-line-diago;
+}
+
 .oval{
     stroke-dasharray: 214;
     stroke-dashoffset: 214;
@@ -118,10 +154,28 @@ svg circle, svg line{
 
 @keyframes show-line-horiz{
     from{
-        transform: scaleX(1);
+        width: 3%;
     }
     to{
-        transform: scaleX(27);
+        width: 70%;
+    }
+}
+
+@keyframes show-line-verti{
+    from{
+        height: 3%;
+    }
+    to{
+        height: 70%;
+    }
+}
+
+@keyframes show-line-diago{
+    from{
+        width: 3%;
+    }
+    to{
+        width: 99%;
     }
 }
 

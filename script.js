@@ -35,6 +35,8 @@ const player2Name = $('.player2-section .name')
 
 const player2Checkbox = document.querySelector('#checkbox-player2')
 
+const line = $('.win-line')
+
 setupTheme()
 updateValues()
 updateTurn(false)
@@ -44,7 +46,9 @@ cases.forEach(el => {
         if (el.innerHTML == '') {
             fillCase(el)
             if (isGameOver()) {
-                showGameOverDialog()
+                setTimeout(()=>{
+                    showGameOverDialog()
+                },1000)
                 return
             }
             computerTurn()
@@ -57,7 +61,9 @@ function computerTurn() {
         let casePos = chooseRandomCase()
         fillCase(cases[casePos[0] * 3 + casePos[1]])
         if (isGameOver()) {
-            showGameOverDialog()
+            setTimeout(()=>{
+                showGameOverDialog()
+            },1000)
             return
         }
     }
@@ -91,15 +97,17 @@ function isGameOver() {
 
 function checkWinner() {
     //check horizontally
-    for (let e of gameResult) {
+    for (let i in gameResult) {
+        let e = gameResult[i]
         let r = Array.from(new Set(e))
         if (hasOnePositiveItem(r)) {
             winner = r[0]
+            showLine(i, 'h')
             break
         }
     }
     //check vertically
-    for (let i = 0; i < 3; ++i) {
+    for (let i in gameResult) {
         let col = new Set()
         for (let j = 0; j < 3; ++j) {
             col.add(gameResult[j][i])
@@ -107,6 +115,7 @@ function checkWinner() {
         col = Array.from(col)
         if (hasOnePositiveItem(col)) {
             winner = col[0]
+            showLine(i, 'v')
             break
         }
     }
@@ -122,8 +131,10 @@ function checkWinner() {
 
     if (hasOnePositiveItem(d1)) {
         winner = d1[0]
+        showLine(0, 'd')
     } else if (hasOnePositiveItem(d2)) {
         winner = d2[0]
+        showLine(1, 'd')
     }
 
     return winner !== -1
@@ -167,7 +178,7 @@ function showGameOverDialog() {
         msg = `${winner == 0 ? player1 : player2} is the winner`;
     }
     result_dialog_msg.html(msg);
-    $('.modal').css('display', 'block');
+    $('.modal').fadeIn();
     document.querySelector('.result-dialog').style.display = 'flex';
 }
 
@@ -277,17 +288,40 @@ function updateValues() {
 }
 
 function setupTheme() {
-    if(body.hasClass('dark') == isDark){
+    if (body.hasClass('dark') == isDark) {
         return
     }
     body.toggleClass('dark')
 }
 
-function updateTheme(){
+function updateTheme() {
     isDark = !isDark
     setupTheme()
 }
 
-$('#theme-svg').click(()=>{
+$('#theme-svg').click(() => {
     updateTheme()
 })
+
+function showLine(pos, direction) {
+    let className = 'line-'
+    switch (direction) {
+        case 'v': className += 'verti-'; break;
+        case 'h': className += 'horiz-'; break;
+        case 'd': className += 'diago-'; break;
+    }
+    if (direction == 'd') {
+        className += (pos == 0) ? 'left' : 'right';
+    } else {
+        ++pos
+        className += pos
+    }
+    line.removeClass()
+        .addClass(['win-line', className])
+        .show()
+    // setTimeout(() => {
+    //     line.removeClass()
+    //         .addClass('win-line')
+    //         .hide()
+    // }, 1000)
+}
