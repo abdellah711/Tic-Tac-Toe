@@ -1,18 +1,22 @@
 
-var {player1,player2,isPlayingWithComputer,player1Score,player2Score} = checkSavedValues()
+var { player1, player2, isPlayingWithComputer, player1Score, player2Score } = checkSavedValues()
 
 var currentPlayer = 0;
 var winner = -1;
 var gameResult = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]]
 
+var isDark = localStorage.getItem('theme') ?? false
+
+const body = $('body')
+
 const cases = document.querySelectorAll('.case');
 
 const xSvg = '<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">' +
-    '<line class="line1" x1="22.0607" y1="20.9393" x2="80.0434" y2="78.9221" stroke="#4769E2" stroke-width="3"/>' +
-    '<line class="line2" x1="80.0434" y1="21.0607" x2="22.0607" y2="79.0434" stroke="#4769E2" stroke-width="3"/></svg>'
+    '<line class="line1" x1="22.0607" y1="20.9393" x2="80.0434" y2="78.9221" stroke-width="4"/>' +
+    '<line class="line2" x1="80.0434" y1="21.0607" x2="22.0607" y2="79.0434" stroke-width="4"/></svg>'
 
 const oSvg = '<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-    '<circle class="oval" cx="50.5" cy="50.5" r="34" stroke="#4769E2" stroke-width="3"/></svg>'
+    '<circle class="oval" cx="50.5" cy="50.5" r="34" stroke-width="4"/></svg>'
 
 const player1Avatar = $('.player1-section .avatar-container')
 const player2Avatar = $('.player2-section .avatar-container')
@@ -31,7 +35,7 @@ const player2Name = $('.player2-section .name')
 
 const player2Checkbox = document.querySelector('#checkbox-player2')
 
-
+setupTheme()
 updateValues()
 updateTurn(false)
 
@@ -74,8 +78,8 @@ function isGameOver() {
     if (checkWinner()) {
         if (winner) {
             ++player2Score
-        }else{
-        ++player1Score
+        } else {
+            ++player1Score
         }
         saveValues()
         updateValues()
@@ -163,7 +167,7 @@ function showGameOverDialog() {
         msg = `${winner == 0 ? player1 : player2} is the winner`;
     }
     result_dialog_msg.html(msg);
-    $('.modal').css('display','block');
+    $('.modal').css('display', 'block');
     document.querySelector('.result-dialog').style.display = 'flex';
 }
 
@@ -201,7 +205,7 @@ player2Checkbox.addEventListener('change', e => {
     saveValues()
 })
 
-function setPlayingWithComputer(boo , restart = true) {
+function setPlayingWithComputer(boo, restart = true) {
     isPlayingWithComputer = !boo
     restart && restartGame()
     if (isPlayingWithComputer) {
@@ -252,22 +256,38 @@ function checkSavedValues() {
         return JSON.parse(data)
     }
     $('.modal').fadeIn()
-    $('.play-dialog').css('display','grid')
-    return {player1:'Player 1',player2:'Player 2',isPlayingWithComputer: true,player1Score: 0,player2Score: 0}
+    $('.play-dialog').css('display', 'grid')
+    return { player1: 'Player 1', player2: 'Player 2', isPlayingWithComputer: true, player1Score: 0, player2Score: 0 }
 }
 
 function saveValues() {
     localStorage.setItem(
         'data',
-        JSON.stringify({player1,player2,isPlayingWithComputer,player1Score,player2Score})
+        JSON.stringify({ player1, player2, isPlayingWithComputer, player1Score, player2Score })
     )
 }
 
-function updateValues(){
-    player1ScoreElement.html('Score: '+player1Score)
-    player2ScoreElement.html('Score: '+player2Score)
+function updateValues() {
+    player1ScoreElement.html('Score: ' + player1Score)
+    player2ScoreElement.html('Score: ' + player2Score)
     player1Name.html(player1)
     player2Name.html(player2)
     player2Checkbox.checked = !isPlayingWithComputer
-    setPlayingWithComputer(!isPlayingWithComputer,false)
+    setPlayingWithComputer(!isPlayingWithComputer, false)
 }
+
+function setupTheme() {
+    if(body.hasClass('dark') == isDark){
+        return
+    }
+    body.toggleClass('dark')
+}
+
+function updateTheme(){
+    isDark = !isDark
+    setupTheme()
+}
+
+$('#theme-svg').click(()=>{
+    updateTheme()
+})
