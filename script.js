@@ -319,9 +319,9 @@ function showLine(pos, direction) {
     line.removeClass()
         .addClass(['win-line', className])
         .show()
-    // setTimeout(() => {
-    //     line.removeClass()
-    //         .addClass('win-line')
-    //         .hide()
-    // }, 1000)
+    setTimeout(() => {
+        line.removeClass()
+            .addClass('win-line')
+            .hide()
+    }, 1000)
 }
