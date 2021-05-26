@@ -5,7 +5,7 @@ var currentPlayer = 0;
 var winner = -1;
 var gameResult = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]]
 
-var isDark = localStorage.getItem('theme') ?? false
+var isDark = localStorage.getItem('theme') == 'true'
 
 const body = $('body')
 
@@ -297,6 +297,7 @@ function setupTheme() {
 function updateTheme() {
     isDark = !isDark
     setupTheme()
+    localStorage.setItem('theme',isDark)
 }
 
 $('#theme-svg').click(() => {

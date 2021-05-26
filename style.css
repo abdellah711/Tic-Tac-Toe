@@ -7,6 +7,7 @@
 }
 body{
     --colorPrimary: rgb(154, 199, 201);
+    --colorPrimary90: rgba(90,154, 199, 201);
     --colorAccent: #092e50;
     --colorSecondary: #4769E2;
     --backgroundColor: #fff;
@@ -24,6 +25,7 @@ body{
 
 body.dark{
     --colorPrimary: rgb(154, 199, 201);
+    --colorPrimary90: rgba(90,154, 199, 201);
     --colorAccent: #557899;
     --colorSecondary: #4769E2;
     --backgroundColor: #202020;
@@ -60,7 +62,9 @@ svg circle, svg line{
     justify-content: center;
     align-items: center;
 }
-
+.case:hover{
+    background-color: var(--colorPrimary90);
+}
 .case svg{
     width: 90%;
     height: 90%;
@@ -200,6 +204,9 @@ svg circle, svg line{
 .player2-section > * , .player1-section > *{
     margin: 5px 0;
 }
+p.name{
+    margin-top:20px;
+}
 .turns-container{
     grid-column: 2/3;
 }
@@ -299,9 +306,6 @@ button{
 }
 .xoSvg{
     stroke: var(--colorSecondary);
-}
-.name{
-    max-lines: 1;
 }
 
 .avatar-container{
