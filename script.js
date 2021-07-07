@@ -41,6 +41,8 @@ setupTheme()
 updateValues()
 updateTurn(false)
 
+setPlayingWithComputer(true,false)
+
 cases.forEach(el => {
     el.addEventListener('click', e => {
         if (el.innerHTML == '') {
@@ -189,6 +191,7 @@ const p2 = $('#player2')
 document.querySelector('#_2players').onchange = function () {
     p2.val(this.checked ? "" : "Computer")
     p2.prop('disabled', !this.checked)
+    setPlayingWithComputer(this.checked,false)
 }
 
 start_btn.on('click', e => {
@@ -199,7 +202,7 @@ start_btn.on('click', e => {
         player1Name.html(player1)
     }
 
-    if (p2.val().length != 0) {
+    if (p2.val().length != 0 && $('#_2players').checked) {
         player2 = p2.val()
         player2Name.html(player2)
     }
